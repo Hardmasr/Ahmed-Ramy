@@ -1,0 +1,386 @@
+```html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أحمد رامي صلاح | بطاقة تواصل رقمية NFC</title>
+    
+    <!-- استيراد خط Cairo و Tajawal العصري للغة العربية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- استيراد مكتبة Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- استيراد أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- إعدادات Tailwind المخصصة -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                        tajawal: ['Tajawal', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 8s infinite alternate',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -40px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #06090e;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* تأثير الزجاج المصقول العصري */
+        .glass-card {
+            background: rgba(17, 24, 39, 0.68);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 
+                        inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+        }
+
+        /* أزرار التواصل التفاعلية */
+        .action-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.01);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 12px 24px -8px rgba(16, 185, 129, 0.25);
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* توهج إطار الصورة الشخصية المتناغم مع اللون الأخضر في الملابس */
+        .avatar-ring {
+            background: conic-gradient(from 180deg at 50% 50%, #10b981 0deg, #06b6d4 120deg, #059669 240deg, #10b981 360deg);
+            padding: 3.5px;
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.35);
+        }
+
+        /* إخفاء شريط التمرير مع السماح بالتمرير السلس */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06090e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex items-center justify-center p-4 sm:p-6 relative selection:bg-emerald-500 selection:text-white">
+
+    <!-- خلفية ضوئية متحركة جذابة -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- شبكة هندسية خفيفة -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b9810a_1px,transparent_1px),linear-gradient(to_bottom,#10b9810a_1px,transparent_1px)] bg-[size:32px_32px]"></div>
+        
+        <!-- دوائر إضاءة متوهجة -->
+        <div class="absolute top-[-10%] right-[-10%] w-80 h-80 sm:w-96 sm:h-96 bg-emerald-500/20 rounded-full filter blur-[100px] animate-blob"></div>
+        <div class="absolute bottom-[-10%] left-[-10%] w-80 h-80 sm:w-96 sm:h-96 bg-teal-500/20 rounded-full filter blur-[100px] animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute top-[40%] left-[25%] w-64 h-64 bg-cyan-500/10 rounded-full filter blur-[90px] animate-blob" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- حاوية البطاقة الرئيسية (NFC Card Container) -->
+    <main class="w-full max-w-md z-10 my-auto">
+        <div class="glass-card rounded-[2rem] p-6 sm:p-8 relative overflow-hidden">
+            
+            <!-- شريط علوي يعبر عن تقنية NFC + زر مشاركة سريع -->
+            <div class="flex items-center justify-between mb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold tracking-wide">
+                    <i class="fa-solid fa-wifi rotate-90 text-[11px] animate-pulse"></i>
+                    <span>بطاقة NFC ذكية</span>
+                </div>
+
+                <button onclick="shareProfile()" title="مشاركة البطاقة" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                    <i class="fa-solid fa-share-nodes text-sm"></i>
+                </button>
+            </div>
+
+            <!-- قسم الصورة الشخصية والاسم -->
+            <div class="flex flex-col items-center text-center mb-7">
+                <!-- إطار الصورة المتوهج -->
+                <div class="relative mb-4 animate-float">
+                    <div class="avatar-ring rounded-full w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center">
+                        <div class="w-full h-full rounded-full overflow-hidden bg-slate-100 border-2 border-slate-900">
+                            <!-- الصورة الشخصية المرفقة -->
+                            <img 
+                                src="26972.jpg" 
+                                alt="أحمد رامي صلاح" 
+                                class="w-full h-full object-cover object-top scale-105 transition-transform duration-500 hover:scale-110"
+                                onerror="this.onerror=null; this.src='https://placehold.co/400x400/10b981/ffffff?text=أحمد+رامي';"
+                            >
+                        </div>
+                    </div>
+                    <!-- شارة التوثيق / النشاط -->
+                    <div class="absolute bottom-1 right-1 bg-slate-900 rounded-full p-1">
+                        <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 shadow-lg" title="متاح للتواصل">
+                            <i class="fa-solid fa-check text-xs font-bold"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الاسم الكامل -->
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-1.5">
+                    أحمد رامي صلاح
+                </h1>
+                
+                <!-- وصف ترحيبي قصير -->
+                <p class="text-slate-400 text-sm sm:text-base font-tajawal max-w-xs leading-relaxed">
+                    أهلاً بك! اختر وسيلة التواصل المناسبة لك بالأسفل للتواصل معي مباشرة بضغطة واحدة
+                </p>
+            </div>
+
+            <!-- زر حفظ جهة الاتصال المباشر (ميزة أساسية لكروت NFC) -->
+            <div class="mb-6">
+                <button onclick="downloadVCard()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-base shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer active:scale-[0.98]">
+                    <i class="fa-solid fa-address-card text-lg"></i>
+                    <span>حفظ الرقم في جهات الاتصال</span>
+                </button>
+            </div>
+
+            <!-- فاصل أنيق -->
+            <div class="flex items-center gap-3 mb-5">
+                <div class="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent flex-1"></div>
+                <span class="text-xs text-slate-400 font-medium">قنوات التواصل المباشر</span>
+                <div class="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent flex-1"></div>
+            </div>
+
+            <!-- قائمة أزرار التواصل التفاعلية -->
+            <div class="space-y-3.5">
+
+                <!-- 1. زر الاتصال الهاتفي المباشر -->
+                <div class="action-btn rounded-2xl p-1.5 flex items-center justify-between group">
+                    <a href="tel:+201151815391" class="flex items-center gap-3.5 flex-1 p-2">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-inner">
+                            <i class="fa-solid fa-phone-volume text-lg"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-bold text-base group-hover:text-emerald-300 transition-colors">اتصال هاتفي مباشر</div>
+                            <div class="text-slate-400 text-xs font-mono tracking-wider mt-0.5" dir="ltr">0115 181 5391</div>
+                        </div>
+                    </a>
+                    <!-- زر نسخ الرقم السريع -->
+                    <button onclick="copyPhoneNumber()" title="نسخ الرقم" class="p-3 ml-1 rounded-xl text-slate-400 hover:text-emerald-400 hover:bg-white/5 transition-colors cursor-pointer">
+                        <i class="fa-regular fa-copy text-base"></i>
+                    </button>
+                </div>
+
+                <!-- 2. زر واتساب المباشر -->
+                <a href="https://wa.me/201151815391" target="_blank" rel="noopener noreferrer" class="action-btn rounded-2xl p-3.5 flex items-center justify-between group block">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#25D366]/20 to-[#128C7E]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-bold text-base group-hover:text-[#25D366] transition-colors">محادثة واتساب</div>
+                            <div class="text-slate-400 text-xs mt-0.5">تواصل فوري عبر WhatsApp</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-white group-hover:bg-[#25D366]/20 transition-all">
+                        <i class="fa-solid fa-arrow-up-left text-sm"></i>
+                    </div>
+                </a>
+
+                <!-- 3. زر فيسبوك -->
+                <a href="https://www.facebook.com/share/18xrT9j8am/" target="_blank" rel="noopener noreferrer" class="action-btn rounded-2xl p-3.5 flex items-center justify-between group block">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1877F2]/20 to-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] group-hover:bg-[#1877F2] group-hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-facebook-f text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-bold text-base group-hover:text-[#60a5fa] transition-colors">حساب فيسبوك</div>
+                            <div class="text-slate-400 text-xs mt-0.5">تابعني وتواصل معي على Facebook</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-white group-hover:bg-[#1877F2]/20 transition-all">
+                        <i class="fa-solid fa-arrow-up-left text-sm"></i>
+                    </div>
+                </a>
+
+                <!-- 4. زر إنستجرام -->
+                <a href="https://www.instagram.com/ahmed_ramy1919?dlrf=MXh1MDN6YXZnYnp6eA==" target="_blank" rel="noopener noreferrer" class="action-btn rounded-2xl p-3.5 flex items-center justify-between group block">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 via-purple-500/15 to-amber-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 group-hover:bg-gradient-to-tr group-hover:from-amber-500 group-hover:via-pink-500 group-hover:to-purple-600 group-hover:text-white transition-all duration-300">
+                            <i class="fa-brands fa-instagram text-2xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-white font-bold text-base group-hover:text-pink-400 transition-colors">حساب إنستجرام</div>
+                            <div class="text-slate-400 text-xs font-mono mt-0.5" dir="ltr">@ahmed_ramy1919</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 group-hover:text-white group-hover:bg-pink-500/20 transition-all">
+                        <i class="fa-solid fa-arrow-up-left text-sm"></i>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- تذييل البطاقة -->
+            <footer class="mt-8 pt-5 border-t border-white/5 text-center">
+                <p class="text-xs text-slate-500 flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-nfc-symbol text-emerald-500"></i>
+                    <span>تم التصميم لبطاقة التواصل الذكية • أحمد رامي صلاح</span>
+                </p>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- إشعار منبثق (Toast Notification) بدلاً من alert -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
+        <div class="bg-slate-900/95 backdrop-blur-md border border-emerald-500/40 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-semibold">
+            <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <i class="fa-solid fa-check text-xs"></i>
+            </div>
+            <span id="toast-message">تم تنفيذ العملية بنجاح</span>
+        </div>
+    </div>
+
+    <!-- كود البرمجة التفاعلي (JavaScript) -->
+    <script>
+        // دالة لإظهار الإشعارات السريعة للمستخدم
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = message;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 3000);
+        }
+
+        // دالة نسخ رقم الهاتف إلى الحافظة
+        function copyPhoneNumber() {
+            const phoneNumber = '01151815391';
+            const tempInput = document.createElement('input');
+            tempInput.value = phoneNumber;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // للهواتف المحمولة
+            
+            try {
+                document.execCommand('copy');
+                showToast('تم نسخ الرقم: 01151815391');
+            } catch (err) {
+                showToast('تعذر النسخ، الرقم هو: 01151815391');
+            }
+            
+            document.body.removeChild(tempInput);
+        }
+
+        // دالة إنشاء وتحميل ملف جهة اتصال (vCard .vcf) لحفظ الرقم مباشرة في الهاتف
+        function downloadVCard() {
+            try {
+                const vCardData = [
+                    'BEGIN:VCARD',
+                    'VERSION:3.0',
+                    'N:صلاح;أحمد رامي;;;',
+                    'FN:أحمد رامي صلاح',
+                    'TEL;TYPE=CELL,VOICE:+201151815391',
+                    'URL;TYPE=Facebook:https://www.facebook.com/share/18xrT9j8am/',
+                    'URL;TYPE=Instagram:https://www.instagram.com/ahmed_ramy1919?dlrf=MXh1MDN6YXZnYnp6eA==',
+                    'NOTE:بطاقة تواصل رقمية NFC - أحمد رامي صلاح',
+                    'END:VCARD'
+                ].join('\n');
+
+                const blob = new Blob([vCardData], { type: 'text/vcard;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'Ahmed_Ramy_Salah.vcf');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                showToast('جاري تحميل جهة الاتصال لحفظها على هاتفك...');
+            } catch (error) {
+                copyPhoneNumber();
+            }
+        }
+
+        // دالة مشاركة رابط البطاقة الرقمية
+        function shareProfile() {
+            const shareData = {
+                title: 'أحمد رامي صلاح | بطاقة تواصل رقمية',
+                text: 'تواصل مباشرة مع أحمد رامي صلاح عبر الهاتف أو منصات التواصل الاجتماعي:',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                const tempInput = document.createElement('input');
+                tempInput.value = window.location.href;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast('تم نسخ رابط البطاقة لمشاركته!');
+            }
+        }
+    </script>
+</body>
+</html>
+```
